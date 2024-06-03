@@ -18,9 +18,9 @@ The task time allotment is three hours to complete as much as possible. The code
 ### API Information
 
 ```
-- URL - https://challenge.bodhilabs.dev
-- Auth Scheme: Basic
-- Login Credentials
+URL - https://challenge.bodhilabs.dev
+Auth Scheme: Basic
+Login Credentials
   User: test
   Password: user
 ```
