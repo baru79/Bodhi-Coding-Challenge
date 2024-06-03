@@ -145,18 +145,17 @@ export class CreateUserPreferencesDto {
 
 ### Run app
 
-1. After clone the repo, open a terminal and run:
-
-   ```
-   cd bodhi
-   npm run dev
-   ```
-
-2. Create on the root path of the repository the **.env.local** file with the following content:
+1. After clone the repo create on the root path of the repository the **.env.local** file with the following content:
 
    ```
    NEXT_PUBLIC_API_USERNAME=test
    NEXT_PUBLIC_API_PASSWORD=user
+   ```
+
+2. Open a terminal and on the repo directory run:
+
+   ```
+   npm run dev
    ```
 
 3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
