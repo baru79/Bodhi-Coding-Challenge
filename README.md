@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Bodhi - Code Challenge
 
-## Getting Started
+## Objective
 
-First, run the development server:
+Create a responsive React / NextJS application that allows for user creation as well as management of created users / user details. The creation process should include a multi-step form, that persists data across the steps. User Management page should include a full featured table. Application should include at least one example of overriding / custom CSS. API Information is provided below storing / retrieving the users. The API will provide one default user, that should be prohibited from being able to be modified (User will be “Default User”). Information about the Default User will be randomly updated on the API side and events will be emitted through the SSE endpoint below. In addition, any create / update / delete to a user will also trigger an event.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Points of Review may include but not limited to the following items
+
+- State Management
+- Code Organization
+- Error Handling / Validation
+- End User Experience
+
+Feel free to add any additional logic / behavior / testing that you feel would contribute to a production ready application.
+
+The task time allotment is three hours to complete as much as possible. The code should be submitted via a Github Repo. At minimum there should be an initial commit at the start of the challenge, and a final one when complete and/or at the three-hour mark. Additional commits throughout the challenge are suggested.
+
+### API Information
+
+```
+- URL - https://challenge.bodhilabs.dev
+- Auth Scheme: Basic
+- Login Credentials
+  User: test
+  Password: user
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Supported User Endpoints
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- findAll – GET /users
+- findOne – GET /users/resourceId
+- create – POST /users
+- update – PATCH /users/resourceId
+- delete – DELETE /users/resourceId
+- SSE for Live Updates – GET /users/events (This endpoint is not protected at this time)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Create / Update DTO
 
-## Learn More
+```javascript
+const roles = ['user', 'administrator'];
 
-To learn more about Next.js, take a look at the following resources:
+export class CreateUserDto {
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  @IsString()
+  @IsNotEmpty()
+  email: string;
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+
+  @IsString()
+  @IsNotEmpty()
+  phoneNumber: string;
+
+
+  @IsString()
+  @IsIn(roles)
+  @IsNotEmpty()
+  role: string;
+
+
+  @ValidateNested({ each: true })
+  @Type((type) => CreateUserPreferencesDto)
+  @IsObject()
+  preferences: CreateUserPreferencesDto;
+}
+
+
+export class CreateUserPreferencesDto {
+  @IsBoolean()
+  receiveEmails: boolean;
+
+
+  @IsBoolean()
+  @IsOptional()
+  receiveNotifications?: boolean;
+}
+```
+
+### SSE Event Example(s)
+
+```json
+{
+  "data": {
+    "action": "created",
+    "resourceId": "-nXP1hJZUYgOnyshPK9f",
+    "data": {
+      "_id": "-nXP1hJZUYgOnyshPK9f",
+      "firstName": "Default",
+      "lastName": "User3",
+      "email": "testuser@gobodhi.com",
+      "password": "somestring",
+      "phoneNumber": "+14444444444",
+      "role": "administrator",
+      "preferences": { "receiveEmails": true },
+      "createdById": "test",
+      "createdAtDate": "2024-05-01T12:02:47.358Z",
+      "updatedById": "test",
+      "updatedAtDate": "2024-05-01T12:02:47.358Z"
+    }
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "action": "updated",
+    "resourceId": "-nXP1hJZUYgOnyshPK9f",
+    "data": {
+      "_id": "-nXP1hJZUYgOnyshPK9f",
+      "firstName": "Default1",
+      "lastName": "User3",
+      "email": "testuser@gobodhi.com",
+      "password": "somestring",
+      "phoneNumber": "+14444444444",
+      "role": "administrator",
+      "preferences": { "receiveEmails": true },
+      "createdById": "test",
+      "createdAtDate": "2024-05-01T12:02:47.358Z",
+      "updatedById": "test",
+      "updatedAtDate": "2024-05-01T12:03:13.953Z"
+    }
+  }
+}
+```
+
+```json
+{ "data": { "action": "deleted", "resourceId": "-nXP1hJZUYgOnyshPK9f" } }
+```
+
+## Solution for Code Challenge
+
+### Run app
+
+1. After clone the repo, open a terminal and run:
+
+   ```bash
+   cd bodhi
+   npm run dev
+   ```
+
+2. Copy **.env.example.local** file and rename to **.env.local**
+
+3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+4. Enjoy the app! 🙂
